@@ -2,7 +2,6 @@ import { RefreshCw } from "lucide-react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { AppFooter } from "@/components/app-footer";
 import { ConfigMenu } from "@/components/config-menu";
 import { KpiStrip, monthlyKpiItems } from "@/components/kpi-strip";
@@ -18,6 +17,15 @@ import { YtdView } from "@/components/ytd-view";
 import { lastClosedMonth, type MonthlyData } from "@/lib/monthly";
 import { useAppStore } from "@/lib/store";
 
+const PLACEHOLDER_KPIS = [
+  { key: "pieces", label: "Pieces" },
+  { key: "collectors", label: "Collectors" },
+  { key: "xtz", label: "XTZ" },
+  { key: "usd", label: "USD" },
+  { key: "avg-pieces", label: "Avg pieces / collector" },
+  { key: "avg-usd", label: "Avg USD / collector" },
+] as const;
+
 function TezosMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 80 80" className={className} aria-hidden="true" fill="none">
@@ -29,15 +37,18 @@ function TezosMark({ className }: { className?: string }) {
 
 function LoadingState() {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-xl" />
+    <div className="flex flex-col gap-4">
+      <section className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+        {PLACEHOLDER_KPIS.map((item) => (
+          <Card key={item.key} className="flex h-full flex-col rounded-xl p-4">
+            <p className="text-xs font-medium tracking-wide text-muted">{item.label}</p>
+            <p className="mt-2 font-mono text-2xl leading-none tabular-nums tracking-tight text-subtle">
+              —
+            </p>
+          </Card>
         ))}
-      </div>
-      <Skeleton className="h-80 rounded-2xl" />
-      <Skeleton className="h-80 rounded-2xl" />
-      <Skeleton className="h-80 rounded-2xl" />
+      </section>
+      <p className="text-sm text-muted">Loading closed-month stats…</p>
     </div>
   );
 }

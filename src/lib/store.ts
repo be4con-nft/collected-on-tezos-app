@@ -16,11 +16,9 @@ function readStoredUnit(): ValueUnit {
 }
 
 type AppState = {
-  opened: boolean;
   view: ViewMode;
   unit: ValueUnit;
   period: PeriodMode;
-  open: () => void;
   setView: (view: ViewMode) => void;
   setUnit: (unit: ValueUnit) => void;
   setPeriod: (period: PeriodMode) => void;
@@ -28,11 +26,9 @@ type AppState = {
 };
 
 export const useAppStore = create<AppState>((set) => ({
-  opened: false,
   view: "graphic",
   unit: "xtz",
   period: "ytd",
-  open: () => set({ opened: true }),
   setView: (view) => set({ view }),
   setPeriod: (period) => set({ period }),
   setUnit: (unit) => {

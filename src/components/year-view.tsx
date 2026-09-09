@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartTooltip } from "@/components/chart-tooltip";
 import { YoyChip } from "@/components/yoy-chip";
-import { CHART_TICK, logDomain, logTicks } from "@/lib/chart";
+import { CHART_TICK } from "@/lib/chart";
 import { formatAxisTick, formatCompact, formatDecimal, formatInt, formatUsd } from "@/lib/format";
 import type { YearRow } from "@/lib/monthly";
 import { valueOf } from "@/lib/monthly";
@@ -77,14 +77,12 @@ function YearBar({
   years,
   dataKey,
   unit,
-  log,
 }: {
   title: string;
   hint: string;
   years: YearRow[];
   dataKey: "collectors" | "pieces" | "value";
   unit?: ValueUnit;
-  log?: boolean;
 }) {
   const reduce = useReducedMotion();
   const data = years.map((row) => ({
@@ -92,9 +90,6 @@ function YearBar({
     value: valueOf(row, unit ?? "xtz"),
     tick: row.months === 12 ? String(row.year) : `${row.year} YTD`,
   }));
-  const series = data.map((row) => (dataKey === "value" ? row.value : row[dataKey]));
-  const [logMin, logMax] = logDomain(series);
-  const ticks = log ? logTicks(logMin, logMax) : undefined;
 
   return (
     <Card>
@@ -115,10 +110,6 @@ function YearBar({
                 interval={0}
               />
               <YAxis
-                scale={log ? "log" : "auto"}
-                domain={log ? [logMin, logMax] : ["auto", "auto"]}
-                ticks={ticks}
-                allowDataOverflow={false}
                 tickFormatter={formatAxisTick}
                 tick={CHART_TICK}
                 axisLine={false}
@@ -240,11 +231,10 @@ export function YearView({
           <YearBar title="Pieces" hint="Arts collected" years={years} dataKey="pieces" />
           <YearBar
             title={unit.toUpperCase()}
-            hint="Log scale"
+            hint="Linear"
             years={years}
             dataKey="value"
             unit={unit}
-            log
           />
         </div>
       ) : (
